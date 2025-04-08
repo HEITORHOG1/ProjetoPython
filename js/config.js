@@ -6,11 +6,11 @@ const CONFIG = {
     PIAPI_KEY: '49b303f4bfb29b62ef12a016c6db81c631556beac8857d4412f5a4ea93bd40bb',
     
     // URLs da API
-    PROXY_URL: 'http://localhost:3000', // URL do servidor proxy para evitar CORS
+    PROXY_URL: 'http://localhost:5000/api', // URL para o servidor integrado na porta 5000
     
     // Modelos da API
     AI_MODELS: {
-        CHAT: 'gpt-3.5-turbo', // Alterado para um modelo mais compatível
+        CHAT: 'gpt-4o-mini', // Modelo mais avançado com melhor custo-benefício
         IMAGE: 'Qubico/flux1-dev', // Modelo para geração de imagens
     },
     
@@ -48,11 +48,24 @@ Formate cada título como "1. [TÍTULO]" seguido por uma quebra de linha.`,
 sociais profundos, inspiradas em eventos que "realmente aconteceram" em 2024, narradas e escritas no estilo característico de Machado de Assis 
 (ou de outros escritores contemporâneos de renome), mas com um toque moderno e viral, otimizadas para vídeos no YouTube (HISTÓRIAS VIRAIS).
 Seu objetivo é desenvolver uma narrativa autêntica, envolvente e visualmente poderosa, 
-que capture a atenção nos primeiros segundos e mantenha o público assistindo até o fim.`,
+que capture a atenção nos primeiros segundos e mantenha o público assistindo até o fim.
+
+Elementos Estilísticos:
+- Narração em terceira pessoa, com narrador onisciente e tom irônico ocasional.
+- Diálogos que contrastem diferentes classes sociais.
+- Descrições detalhadas de cenários, enfatizando a disparidade social.
+- Análises psicológicas dos personagens, explorando motivações e transformações.
+- Ironia e humor sutil, criticando convenções sociais e preconceitos.
+- Reflexões filosóficas sobre desigualdade, destino e natureza humana.
+- Equilíbrio entre tom realista e momentos de emoção intensa e reviravoltas.
+- Palavras-chave de SEO durante a narrativa (ex.: "história emocionante", "história inspiradora", "contraste social").
+- Chamadas à ação (comentar, curtir, compartilhar).
+- Referências sutis ao ano de 2024 (tecnologia, contexto social).
+- Potencial de viralização, usando ganchos, cliffhangers e linguagem de impacto.`,
             
             PART1_PROMPT: `Você está escrevendo a Parte 1 (5.000 palavras mínimo) da história com o título "{TITLE}".
 
-Siga esta estrutura para a Parte 1:
+Estrutura para a Parte 1:
 - Introdução, Cenário, Gancho
 - Protagonista vs. Antagonista
 - Conflito Inicial + Suspense
@@ -80,7 +93,10 @@ Elementos Estilísticos:
 - Ironia e humor sutil, criticando convenções sociais e preconceitos.
 - Reflexões filosóficas sobre desigualdade, destino e natureza humana.
 
-Sua resposta DEVE ter NO MÍNIMO 5.000 palavras, nunca menos.`,
+Sua resposta DEVE ter NO MÍNIMO 5.000 palavras, nunca menos.
+
+Ao final da Parte 1, conclua com:
+"Parte 1 (5000 palavras) concluída. Posso continuar para a próxima parte? Para prosseguir, responda 'Continuar'. Para fazer ajustes, forneça suas instruções específicas."`,
 
             PART2_PROMPT: `Você está escrevendo a Parte 2 (5.000 palavras mínimo) da história com o título "{TITLE}".
 
@@ -103,7 +119,10 @@ Inclua palavras de alto impacto como "reviravolta", "choque", "inesperado", "mud
 
 Termine esta parte com um forte cliffhanger que desperte a curiosidade para a Parte 3.
 
-Sua resposta DEVE ter NO MÍNIMO 5.000 palavras, nunca menos.`,
+Sua resposta DEVE ter NO MÍNIMO 5.000 palavras, nunca menos.
+
+Ao final da Parte 2, conclua com:
+"Parte 2 (5000 palavras) concluída. Posso continuar para a próxima parte? Para prosseguir, responda 'Continuar'. Para fazer ajustes, forneça suas instruções específicas."`,
 
             PART3_PROMPT: `Você está escrevendo a Parte 3 (5.000 palavras mínimo) da história com o título "{TITLE}".
 
@@ -126,7 +145,10 @@ Use mais palavras de alto impacto como "revelação", "confronto", "devastador",
 
 Termine esta parte com um forte cliffhanger que crie enorme expectativa para a conclusão.
 
-Sua resposta DEVE ter NO MÍNIMO 5.000 palavras, nunca menos.`,
+Sua resposta DEVE ter NO MÍNIMO 5.000 palavras, nunca menos.
+
+Ao final da Parte 3, conclua com:
+"Parte 3 (5000 palavras) concluída. Posso continuar para a próxima parte? Para prosseguir, responda 'Continuar'. Para fazer ajustes, forneça suas instruções específicas."`,
 
             PART4_PROMPT: `Você está escrevendo a Parte 4 final (5.000 palavras mínimo) da história com o título "{TITLE}".
 
@@ -147,7 +169,10 @@ Elementos Estilísticos:
 
 Inclua um chamado à ação sutil para o leitor refletir sobre as questões abordadas. Opcionalmente, deixe um pequeno gancho para uma possível continuação.
 
-Sua resposta DEVE ter NO MÍNIMO 5.000 palavras, nunca menos.`,
+Sua resposta DEVE ter NO MÍNIMO 5.000 palavras, nunca menos.
+
+Ao final da Parte 4, conclua com:
+"Parte 4 (5000 palavras) concluída. Posso continuar para a próxima etapa? Para prosseguir, responda 'Continuar'. Para fazer ajustes, forneça suas instruções específicas."`,
         },
         
         IMAGE_DESCRIPTIONS_PROMPT: `Você está criando 20 descrições para gerar imagens a partir da história com o título "{TITLE}".
@@ -170,4 +195,4 @@ Certifique-se de que as descrições representem momentos-chave da história e m
 
 Importante: Escreva apenas em inglês para compatibilidade com a API de geração de imagens.`
     }
-}; 
+};

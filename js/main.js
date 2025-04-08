@@ -293,67 +293,167 @@ document.addEventListener('DOMContentLoaded', () => {
             generateImagePromptsBtn.disabled = false;
         }
     });
-    
-    generateImagesBtn.addEventListener('click', async () => {
+   // Substitua a função generateImagePromptsBtn.addEventListener no arquivo js/main.js
+
+generateImagePromptsBtn.addEventListener('click', async () => {
+    try {
+        // Verificar se todas as partes da história foram geradas
+        if (!state.storyParts.part1 || !state.storyParts.part2) {
+            alert('Você precisa gerar pelo menos as partes 1 e 2 da história antes de gerar descrições de imagens.');
+            return;
+        }
+        
+        // Mostrar loading
+        generateImagePromptsBtn.disabled = true;
+        loadingImagePrompts.classList.remove('d-none');
+        imagePromptsContainer.classList.add('d-none');
+        
+        // Combinar as partes da história disponíveis
+        const availableParts = [];
+        if (state.storyParts.part1) availableParts.push(state.storyParts.part1);
+        if (state.storyParts.part2) availableParts.push(state.storyParts.part2);
+        if (state.storyParts.part3) availableParts.push(state.storyParts.part3);
+        if (state.storyParts.part4) availableParts.push(state.storyParts.part4);
+        
+        const fullStory = availableParts.join('\n\n');
+        
+        // Gerar descrições de imagens
         try {
-            // Verificar se há descrições de imagens
-            if (state.imageDescriptions.length === 0) {
-                alert('Você precisa gerar descrições de imagens antes.');
-                return;
-            }
+            const descriptions = await imageDescriptionService.generateImageDescriptions(
+                state.selectedTitle,
+                fullStory
+            );
             
-            // Mostrar loading
-            generateImagesBtn.disabled = true;
-            loadingImages.classList.remove('d-none');
+            // Atualizar estado
+            state.imageDescriptions = descriptions;
             
-            // Limpar imagens anteriores
-            imagesContainer.innerHTML = '';
-            state.generatedImages = [];
+            // Mostrar descrições
+            imagePromptsList.innerHTML = '';
+            descriptions.forEach((description, index) => {
+                // Extrair título da descrição (primeira linha)
+                const titleMatch = description.match(/Descrição #\d+: \[(.*?)\]/);
+                const descTitle = titleMatch ? titleMatch[1] : `Imagem ${index + 1}`;
+                
+                // Criar item do acordeão
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'accordion-item';
+                accordionItem.innerHTML = `
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}">
+                            ${descTitle}
+                        </button>
+                    </h2>
+                    <div id="collapse${index}" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <div class="image-prompt-text">${description}</div>
+                            <div class="image-result mt-3 d-none">
+                                <img src="" alt="${descTitle}" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                imagePromptsList.appendChild(accordionItem);
+            });
             
-            // Gerar imagens uma a uma (para não sobrecarregar a API)
-            // Vamos gerar apenas as primeiras 4 imagens para demonstração
-            const maxImagesToGenerate = Math.min(4, state.imageDescriptions.length);
+            // Esconder loading e mostrar descrições
+            loadingImagePrompts.classList.add('d-none');
+            imagePromptsContainer.classList.remove('d-none');
+        } catch (error) {
+            alert(`Erro ao gerar descrições de imagens: ${error.message}\n\nTente novamente.`);
+            console.error('Erro ao gerar descrições de imagens:', error);
             
-            for (let i = 0; i < maxImagesToGenerate; i++) {
+            // Mesmo com erro, desbloquear a interface
+            loadingImagePrompts.classList.add('d-none');
+        }
+    } catch (error) {
+        alert(`Erro ao gerar descrições de imagens: ${error.message}`);
+        console.error('Erro ao gerar descrições de imagens:', error);
+    } finally {
+        generateImagePromptsBtn.disabled = false;
+    }
+});
+
+// Substitua a função generateImagesBtn.addEventListener no arquivo js/main.js
+
+generateImagesBtn.addEventListener('click', async () => {
+    try {
+        // Verificar se há descrições de imagens
+        if (state.imageDescriptions.length === 0) {
+            alert('Você precisa gerar descrições de imagens antes.');
+            return;
+        }
+        
+        // Mostrar loading
+        generateImagesBtn.disabled = true;
+        loadingImages.classList.remove('d-none');
+        
+        // Limpar imagens anteriores
+        imagesContainer.innerHTML = '';
+        state.generatedImages = [];
+        
+        // Gerar imagens uma a uma (para não sobrecarregar a API)
+        // Vamos gerar apenas as primeiras 4 imagens para demonstração
+        const maxImagesToGenerate = Math.min(4, state.imageDescriptions.length);
+        
+        for (let i = 0; i < maxImagesToGenerate; i++) {
+            try {
+                // Atualizar mensagem de loading
+                const loadingMessage = loadingImages.querySelector('p');
+                loadingMessage.textContent = `Gerando imagem ${i + 1} de ${maxImagesToGenerate}, por favor aguarde...`;
+                
+                // Gerar imagem
                 try {
-                    // Atualizar mensagem de loading
-                    const loadingMessage = loadingImages.querySelector('p');
-                    loadingMessage.textContent = `Gerando imagem ${i + 1} de ${maxImagesToGenerate}, por favor aguarde...`;
-                    
-                    // Gerar imagem
                     const imageUrl = await imageDescriptionService.generateImage(state.imageDescriptions[i]);
                     
-                    // Atualizar estado
-                    state.generatedImages.push({
-                        description: state.imageDescriptions[i],
-                        url: imageUrl
-                    });
-                    
-                    // Mostrar imagem na descrição correspondente
-                    const imageResult = document.querySelector(`#collapse${i} .image-result`);
-                    const imageElement = imageResult.querySelector('img');
-                    imageElement.src = imageUrl;
-                    imageResult.classList.remove('d-none');
-                    
-                    // Adicionar à galeria
-                    addImageToGallery(state.imageDescriptions[i], imageUrl, i);
-                } catch (error) {
-                    console.error(`Erro ao gerar imagem ${i + 1}:`, error);
-                    // Continua para a próxima imagem mesmo se houver erro
+                    if (imageUrl) {
+                        // Atualizar estado
+                        state.generatedImages.push({
+                            description: state.imageDescriptions[i],
+                            url: imageUrl
+                        });
+                        
+                        // Mostrar imagem na descrição correspondente
+                        const imageResult = document.querySelector(`#collapse${i} .image-result`);
+                        if (imageResult) {
+                            const imageElement = imageResult.querySelector('img');
+                            imageElement.src = imageUrl;
+                            imageResult.classList.remove('d-none');
+                        }
+                        
+                        // Adicionar à galeria
+                        addImageToGallery(state.imageDescriptions[i], imageUrl, i);
+                    } else {
+                        console.error(`Não foi possível gerar a imagem ${i + 1}: URL inválida`);
+                    }
+                } catch (imageError) {
+                    console.error(`Erro ao gerar imagem ${i + 1}:`, imageError);
+                    // Continuar para a próxima imagem mesmo com erro
                 }
+                
+                // Pequena pausa entre requisições para não sobrecarregar a API
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+            } catch (error) {
+                console.error(`Erro ao gerar imagem ${i + 1}:`, error);
+                // Continua para a próxima imagem mesmo se houver erro
             }
-            
-            // Esconder loading e mostrar imagens
-            loadingImages.classList.add('d-none');
-            imagesContainer.classList.remove('d-none');
-        } catch (error) {
-            alert(`Erro ao gerar imagens: ${error.message}`);
-            console.error('Erro ao gerar imagens:', error);
-        } finally {
-            generateImagesBtn.disabled = false;
         }
-    });
-    
+        
+        // Esconder loading e mostrar imagens
+        loadingImages.classList.add('d-none');
+        if (state.generatedImages.length > 0) {
+            imagesContainer.classList.remove('d-none');
+        } else {
+            alert('Não foi possível gerar nenhuma imagem. Por favor, tente novamente.');
+        }
+    } catch (error) {
+        alert(`Erro ao gerar imagens: ${error.message}`);
+        console.error('Erro ao gerar imagens:', error);
+    } finally {
+        generateImagesBtn.disabled = false;
+    }
+});
     // Função para adicionar uma imagem à galeria
     function addImageToGallery(description, imageUrl, index) {
         // Extrair título da descrição (primeira linha)
