@@ -1,0 +1,107 @@
+/* Estilos globais */
+body {
+    background-color: #f8f9fa;
+}
+
+/* Estilos para os cartões */
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Estilos para o conteúdo da história */
+.story-content {
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: #fff;
+    border-radius: 5px;
+    white-space: pre-line;
+    line-height: 1.6;
+}
+
+/* Estilo para a lista de títulos */
+.list-group-item {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.list-group-item:hover {
+    background-color: #f1f8ff;
+}
+
+.list-group-item.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Estilos para os prompts de imagem */
+.accordion-button:not(.collapsed) {
+    background-color: #e7f5ff;
+    color: #0c63e4;
+}
+
+.image-prompt-text {
+    white-space: pre-line;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Estilos para a galeria de imagens */
+.image-card {
+    margin-bottom: 20px;
+    transition: transform 0.3s;
+}
+
+.image-card:hover {
+    transform: scale(1.03);
+}
+
+.image-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Personalização da barra de rolagem */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+} 
